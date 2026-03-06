@@ -1,0 +1,63 @@
+/* MailTick - Gmail Tick Badge Styles */
+
+.mailtick-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0px;
+  margin-left: 6px;
+  vertical-align: middle;
+  cursor: default;
+  user-select: none;
+}
+
+.mailtick-tick {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-block;
+}
+
+.mailtick-tick:nth-child(2) {
+  margin-left: -5px;
+}
+
+.mailtick-grey .mailtick-tick,
+.mailtick-tick.mailtick-grey {
+  color: #9e9e9e;
+}
+
+.mailtick-blue .mailtick-tick,
+.mailtick-tick.mailtick-blue {
+  color: #4fc3f7;
+}
+
+.mailtick-read .mailtick-tick {
+  color: #2196f3;
+}
+
+/* Tooltip on hover */
+.mailtick-badge:hover::after {
+  content: attr(title);
+  position: absolute;
+  background: #333;
+  color: #fff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 9999;
+  transform: translateY(-28px);
+  pointer-events: none;
+  font-family: 'Google Sans', Roboto, sans-serif;
+}
+
+/* Animate blue ticks appearing */
+@keyframes mailtick-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.mailtick-read .mailtick-tick {
+  animation: mailtick-pop 0.3s ease forwards;
+}
