@@ -4,7 +4,7 @@
  * Also reads the sent email list and shows tick status on each email row.
  */
 
-const TRACKER_SERVER = 'https://your-server-url.com'; // Replace with your deployed server URL
+const TRACKER_SERVER = 'https://mailtick.onrender.com'; // Replace with your deployed server URL
 
 // ─── Unique ID Generator ────────────────────────────────────────────────────
 function generateTrackingId() {

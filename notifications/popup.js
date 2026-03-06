@@ -2,7 +2,7 @@
  * MailTick - Popup Script
  */
 
-const TRACKER_SERVER = 'https://your-server-url.com'; // Replace with your deployed server URL
+const TRACKER_SERVER = 'https://mailtick.onrender.com'; // Replace with your deployed server URL
 
 function timeAgo(isoString) {
   const diff = Date.now() - new Date(isoString).getTime();
