@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MailTick</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0f14; --surface: #161921; --surface2: #1e2230;
+      --border: #2a2f42; --accent: #2196f3; --accent-glow: rgba(33,150,243,0.25);
+      --text: #e8eaf0; --text-muted: #6b7494; --read: #2196f3;
+      --sent: #6b7494; --green: #4caf50;
+    }
+    body { width: 360px; min-height: 480px; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; }
+    .header { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, #0d0f14 0%, #131826 100%); position: relative; overflow: hidden; }
+    .header::before { content: ''; position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: var(--accent-glow); border-radius: 50%; filter: blur(40px); }
+    .brand { display: flex; align-items: center; gap: 10px; position: relative; }
+    .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #1565c0, #42a5f5); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; box-shadow: 0 4px 12px rgba(33,150,243,0.4); }
+    .brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: var(--text); }
+    .brand-name span { color: var(--accent); }
+    .brand-tag { font-size: 10px; color: var(--text-muted); font-family: 'DM Mono', monospace; letter-spacing: 0.5px; text-transform: uppercase; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+    .stat { background: var(--surface); padding: 12px 16px; text-align: center; }
+    .stat-num { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1; font-family: 'DM Mono', monospace; }
+    .stat-num.blue { color: var(--accent); }
+    .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    .section-title { padding: 14px 20px 8px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+    .email-list { max-height: 280px; overflow-y: auto; padding: 0 12px 12px; }
+    .email-list::-webkit-scrollbar { width: 4px; }
+    .email-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .email-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; cursor: default; }
+    .email-item:hover { border-color: var(--accent); background: var(--surface2); }
+    .email-item.is-read { border-left: 3px solid var(--accent); }
+    .tick-icon { flex-shrink: 0; font-size: 14px; font-weight: 700; letter-spacing: -4px; padding-right: 3px; }
+    .tick-icon.read { color: var(--accent); }
+    .tick-icon.sent { color: var(--sent); }
+    .email-info { flex: 1; min-width: 0; }
+    .email-subject { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .email-meta { font-size: 10px; color: var(--text-muted); margin-top: 2px; font-family: 'DM Mono', monospace; }
+    .email-status { flex-shrink: 0; font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+    .status-read { background: rgba(33,150,243,0.15); color: var(--accent); }
+    .status-sent { background: rgba(107,116,148,0.15); color: var(--text-muted); }
+    .empty { text-align: center; padding: 32px 20px; color: var(--text-muted); }
+    .empty-icon { font-size: 32px; margin-bottom: 8px; }
+    .empty-text { font-size: 12px; line-height: 1.5; }
+    .footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .clear-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .clear-btn:hover { border-color: #e53935; color: #e53935; }
+    .server-status { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-muted); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+    .status-dot.offline { background: #f44336; box-shadow: 0 0 6px #f44336; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .email-item { animation: fadeUp 0.2s ease forwards; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="brand">
+      <div class="brand-icon">✓✓</div>
+      <div>
+        <div class="brand-name">Mail<span>Tick</span></div>
+        <div class="brand-tag">Read Receipts for Gmail</div>
+      </div>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Tracked</div></div>
+    <div class="stat"><div class="stat-num blue" id="stat-read">0</div><div class="stat-label">Read</div></div>
+    <div class="stat"><div class="stat-num" id="stat-pending">0</div><div class="stat-label">Pending</div></div>
+  </div>
+  <div class="section-title">Recent Emails</div>
+  <div class="email-list" id="email-list">
+    <div class="empty">
+      <div class="empty-icon">📬</div>
+      <div class="empty-text">No tracked emails yet.<br>Send an email from Gmail to start tracking.</div>
+    </div>
+  </div>
+  <div class="footer">
+    <button class="clear-btn" id="clear-btn">Clear All</button>
+    <div class="server-status">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Checking server...</span>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

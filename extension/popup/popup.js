@@ -2,7 +2,7 @@
  * MailTick - Popup Script
  */
 
-const TRACKER_SERVER = 'https://mailtick.onrender.com'; // Replace with your deployed server URL
+const TRACKER_SERVER = 'https://mailtick.onrender.com';
 
 function timeAgo(isoString) {
   const diff = Date.now() - new Date(isoString).getTime();
@@ -76,7 +76,6 @@ async function checkServerStatus() {
   }
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
 chrome.storage.local.get(['emails'], (result) => {
   renderEmails(result.emails || []);
 });
@@ -91,7 +90,6 @@ document.getElementById('clear-btn').addEventListener('click', () => {
   }
 });
 
-// Live updates if storage changes while popup is open
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.emails) {
     renderEmails(changes.emails.newValue || []);
